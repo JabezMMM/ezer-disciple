@@ -1,20 +1,20 @@
 
 // Define the questions and concise labels
 const qualities = [
-    { key: "Biblical Discernment", label: "Discernment" },
-    { key: "Kingdom Focus", label: "Kingdom Focus" },
-    { key: "Obedience & Alignment", label: "Obedience" },
-    { key: "Faith & Action", label: "Faith" },
-    { key: "Kingdom Priorities", label: "Priorities" },
-    { key: "Living Witness", label: "Witness" },
-    { key: "Body Ministry", label: "Ministry" },
-    { key: "Gospel Sharing", label: "Gospel" },
-    { key: "Spiritual Discernment (Fruit)", label: "Fruit" },
-    { key: "Biblical Wisdom", label: "Wisdom" },
-    { key: "Understanding the Heart", label: "Empathy" },
-    { key: "Living Example", label: "Example" },
-    { key: "Sharing the Testimony", label: "Testimony" },
-    { key: "Building Godly Relationships", label: "Relationships" },
+    { key: "01 of 14: Biblical Discernment", label: "Discernment" },
+    { key: "02 of 14: Kingdom Focus", label: "Kingdom Focus" },
+    { key: "03 of 14: Obedience & Alignment", label: "Obedience" },
+    { key: "04 of 14: Faith & Action", label: "Faith" },
+    { key: "05 of 14: Kingdom Priorities", label: "Priorities" },
+    { key: "06 of 14: Living Witness", label: "Witness" },
+    { key: "07 of 14: Body Ministry", label: "Ministry" },
+    { key: "08 of 14: Gospel Sharing", label: "Gospel" },
+    { key: "09 of 14: Spiritual Discernment (Fruit)", label: "Fruit" },
+    { key: "10 of 14: Biblical Wisdom", label: "Wisdom" },
+    { key: "11 of 14: Understanding the Heart", label: "Empathy" },
+    { key: "12 of 14: Living Example", label: "Example" },
+    { key: "13 of 14: Sharing the Testimony", label: "Testimony" },
+    { key: "14 of 14: Building Godly Relationships", label: "Relationships" },
 ];
 
 // Score descriptions
