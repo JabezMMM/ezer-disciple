@@ -48,7 +48,7 @@ body {
     color: inherit;
     text-decoration: none;
     /* pointer-events: none; */
-    cursor: default;
+    cursor: pointer;
 }
 
 .heading-container p {
@@ -165,4 +165,38 @@ canvas {
     background: #fff;
     padding: 20px;
     border-radius: 10px;
+}
+
+/* Home Page Navigation and Content */
+.nav-panel ul {
+    list-style: none;
+    padding: 0;
+}
+
+.nav-panel li {
+    margin-bottom: 12px;
+}
+
+.nav-panel a {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.1em;
+}
+
+.nav-panel a:hover {
+    color: #2f80ed;
+}
+
+@media (min-width: 768px) {
+    .nav-panel {
+        flex: 1;
+        max-width: 20%;
+    }
+    .content-panel {
+        flex: 1;
+        max-width: 100%;
+        padding-left: 0px;
+        height: 100vh;
+        overflow-y: auto;
+    }
 }
