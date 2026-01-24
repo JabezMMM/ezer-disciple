@@ -13,6 +13,10 @@ body {
 .container {
     flex-direction: column;
 }
+.container h3 {
+    font-size: 1.5em;
+    margin-block-start: 2em;
+}
 
 .questions {
     max-width: 100%;
@@ -75,8 +79,6 @@ body {
     .container {
         display: flex;
         flex-direction: row;
-        height: 100vh;
-        overflow: hidden;
     }
 
     .questions {
@@ -195,8 +197,5 @@ canvas {
     .content-panel {
         flex: 1;
         max-width: 100%;
-        padding-left: 0px;
-        height: 100vh;
-        overflow-y: auto;
     }
 }
