@@ -81,6 +81,4 @@ This tool is intended to serve as a gentle mirror for personal discipleship, hel
 to run locally;
 @JabezMMM ➜ /workspaces/ezer-disciple (dev) $ pkill -f "server.py\|http.server" || true; cd /workspaces/ezer-disciple && python3 -m http.server 3001
 
-cd /workspaces/ezer-disciple
-export PORT=3001
-python3 server.py
+cd /workspaces/ezer-disciple;export PORT=8000;python3 server.py;

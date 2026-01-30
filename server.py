@@ -28,6 +28,9 @@ def generate():
     data = request.get_json() or {}
     prompt = data.get('prompt', '')
 
+    if not TL_API_BASE:
+        return jsonify({'error': 'HF Space not configured on server. Please set YOUR_USERNAME and YOUR_SPACE_NAME in .env.'}), 500
+
     payload = {"prompt": prompt}
     headers = {"Content-Type": "application/json"} # Explicitly set this
     url = TL_API_BASE
@@ -37,23 +40,36 @@ def generate():
 
     for attempt in range(1, max_attempts + 1):
         try:
-            # FIX 2: Increased timeout to 90s. 
-            # Free tier Spaces need time to "Wake Up" (Cold Start)
-            resp = requests.post(url, json=payload, timeout=90)
-            
-            # If successful, break the loop and return
+            # Use configured upstream timeout so failures surface faster
+            resp = requests.post(url, json=payload, timeout=UPSTREAM_TIMEOUT)
+
+            # Log response status for diagnostics
+            try:
+                upstream_body = resp.text
+            except Exception:
+                upstream_body = '<unreadable>'
+            app.logger.info('Upstream call attempt %d -> %s (status=%s)', attempt, url, resp.status_code)
+
+            # If successful, return parsed JSON
             if resp.status_code == 200:
-                return jsonify(resp.json())
-            
+                try:
+                    return jsonify(resp.json())
+                except ValueError:
+                    app.logger.warning('Upstream returned invalid JSON: %s', upstream_body)
+                    return jsonify({'error': 'Invalid JSON from upstream', 'status': 502, 'body': upstream_body}), 502
+
             # If 503, the Space is still waking up, so we retry
             if resp.status_code == 503:
+                app.logger.warning('Upstream returned 503; attempt %d of %d', attempt, max_attempts)
                 time.sleep(backoff_seconds[attempt-1])
                 continue
-                
-            # For other errors, return sanitized message
+
+            # For other errors, return sanitized message and include upstream body for diagnostics
+            app.logger.warning('Upstream error (status=%s): %s', resp.status_code, upstream_body)
             return jsonify({
-                "error": "Upstream Service Error", 
-                "status": resp.status_code
+                'error': 'Upstream Service Error',
+                'status': resp.status_code,
+                'body': upstream_body
             }), resp.status_code
 
         except requests.RequestException as e:

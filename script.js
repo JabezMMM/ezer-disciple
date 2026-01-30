@@ -263,7 +263,7 @@ async function handleSend() {
 }
 
 // Call Gemini API
-async function getGeminiResponse(question) { 
+async function getGeminiResponse(question) {
     // Format verses for context
     const versesContext = VERSES.map(v => `${v.ref}: "${v.text}"`).join('\n\n');
 
@@ -281,28 +281,35 @@ Instructions:
 - Do not add theological interpretation
 - If question is not about faith/life, say "I can only answer questions about faith and life using Scripture."`;
 
+    // Browser fetch timeout using AbortController
+    const CLIENT_FETCH_TIMEOUT_MS = 15000; // 15s
     let response;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), CLIENT_FETCH_TIMEOUT_MS);
+
     try {
         response = await fetch(PROXY_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{ text: prompt }]
-                }],
-                generationConfig: {
-                    temperature: 0.3,
-                    maxOutputTokens: 100000
-                }
-            })
+            body: JSON.stringify({ prompt: prompt }),
+            signal: controller.signal
         });
     } catch (e) {
-        // Network-level error (server unreachable / CORS / network down)
+        // Network-level error (server unreachable / CORS / network down) or abort
+        if (e.name === 'AbortError') {
+            const err = new Error('Request timed out — the server took too long to respond. Please try again.');
+            err._raw = e;
+            clearTimeout(timeoutId);
+            throw err;
+        }
         const err = new Error('Backend unreachable — is the server running?');
         err._raw = e;
+        clearTimeout(timeoutId);
         throw err;
+    } finally {
+        clearTimeout(timeoutId);
     }
 
     if (!response.ok) {
@@ -352,11 +359,11 @@ Instructions:
 
     const data = await response.json();
     let text = data.text;
-    
+
     // Replace LORD with YHWH
     text = text.replace(/\b(the\s+)?LORD\b/gi, 'YHWH');
     text = text.replace(/\b(the\s+)?GOD\b/gi, 'YHWH');
-    
+
     text = linkifyReferences(text);
 
     return text;
@@ -459,24 +466,24 @@ window.addEventListener('load', () => {
 
 function linkifyReferences(text) {
     const bookAbbrev = {
-        'Genesis':'gen','Exodus':'exo','Leviticus':'lev','Numbers':'num','Deuteronomy':'deu',
-        'Joshua':'jos','Judges':'jdg','Ruth':'rut','1 Samuel':'1sa','2 Samuel':'2sa',
-        '1 Kings':'1ki','2 Kings':'2ki','1 Chronicles':'1ch','2 Chronicles':'2ch',
-        'Ezra':'ezr','Nehemiah':'neh','Esther':'est','Job':'job','Psalm':'psa','Psalms':'psa',
-        'Proverbs':'pro','Ecclesiastes':'ecc','Song of Solomon':'sng',
-        'Isaiah':'isa','Jeremiah':'jer','Lamentations':'lam','Ezekiel':'eze','Daniel':'dan',
-        'Hosea':'hos','Joel':'joe','Amos':'amo','Obadiah':'oba','Jonah':'jon','Micah':'mic',
-        'Nahum':'nam','Habakkuk':'hab','Zephaniah':'zep','Haggai':'hag','Zechariah':'zec','Malachi':'mal',
-        'Matthew':'mat','Mark':'mar','Luke':'luk','John':'joh','Acts':'act',
-        'Romans':'rom','1 Corinthians':'1co','2 Corinthians':'2co','Galatians':'gal',
-        'Ephesians':'eph','Philippians':'php','Colossians':'col',
-        '1 Thessalonians':'1th','2 Thessalonians':'2th','1 Timothy':'1ti','2 Timothy':'2ti',
-        'Titus':'tit','Philemon':'phm','Hebrews':'heb','James':'jas',
-        '1 Peter':'1pe','2 Peter':'2pe','1 John':'1jn','2 John':'2jn','3 John':'3jn',
-        'Jude':'jud','Revelation':'rev'
+        'Genesis': 'gen', 'Exodus': 'exo', 'Leviticus': 'lev', 'Numbers': 'num', 'Deuteronomy': 'deu',
+        'Joshua': 'jos', 'Judges': 'jdg', 'Ruth': 'rut', '1 Samuel': '1sa', '2 Samuel': '2sa',
+        '1 Kings': '1ki', '2 Kings': '2ki', '1 Chronicles': '1ch', '2 Chronicles': '2ch',
+        'Ezra': 'ezr', 'Nehemiah': 'neh', 'Esther': 'est', 'Job': 'job', 'Psalm': 'psa', 'Psalms': 'psa',
+        'Proverbs': 'pro', 'Ecclesiastes': 'ecc', 'Song of Solomon': 'sng',
+        'Isaiah': 'isa', 'Jeremiah': 'jer', 'Lamentations': 'lam', 'Ezekiel': 'eze', 'Daniel': 'dan',
+        'Hosea': 'hos', 'Joel': 'joe', 'Amos': 'amo', 'Obadiah': 'oba', 'Jonah': 'jon', 'Micah': 'mic',
+        'Nahum': 'nam', 'Habakkuk': 'hab', 'Zephaniah': 'zep', 'Haggai': 'hag', 'Zechariah': 'zec', 'Malachi': 'mal',
+        'Matthew': 'mat', 'Mark': 'mar', 'Luke': 'luk', 'John': 'joh', 'Acts': 'act',
+        'Romans': 'rom', '1 Corinthians': '1co', '2 Corinthians': '2co', 'Galatians': 'gal',
+        'Ephesians': 'eph', 'Philippians': 'php', 'Colossians': 'col',
+        '1 Thessalonians': '1th', '2 Thessalonians': '2th', '1 Timothy': '1ti', '2 Timothy': '2ti',
+        'Titus': 'tit', 'Philemon': 'phm', 'Hebrews': 'heb', 'James': 'jas',
+        '1 Peter': '1pe', '2 Peter': '2pe', '1 John': '1jn', '2 John': '2jn', '3 John': '3jn',
+        'Jude': 'jud', 'Revelation': 'rev'
     };
-    
-    return text.replace(/\b([1-3]?\s?[A-Z][a-z]+(?:\s+of\s+[A-Z][a-z]+)?)\s+(\d+)(?::(\d+)(?:-(\d+))?)?/g, 
+
+    return text.replace(/\b([1-3]?\s?[A-Z][a-z]+(?:\s+of\s+[A-Z][a-z]+)?)\s+(\d+)(?::(\d+)(?:-(\d+))?)?/g,
         (match, book, ch, v1, v2) => {
             const abbr = bookAbbrev[book.trim()];
             if (!abbr) return match;
