@@ -263,7 +263,7 @@ async function handleSend() {
 }
 
 // Call Gemini API
-async function getGeminiResponse(question) {
+async function getGeminiResponse(question) { 
     // Format verses for context
     const versesContext = VERSES.map(v => `${v.ref}: "${v.text}"`).join('\n\n');
 
@@ -281,21 +281,29 @@ Instructions:
 - Do not add theological interpretation
 - If question is not about faith/life, say "I can only answer questions about faith and life using Scripture."`;
 
-    const response = await fetch(PROXY_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            contents: [{
-                parts: [{ text: prompt }]
-            }],
-            generationConfig: {
-                temperature: 0.3,
-                maxOutputTokens: 100000
-            }
-        })
-    });
+    let response;
+    try {
+        response = await fetch(PROXY_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{ text: prompt }]
+                }],
+                generationConfig: {
+                    temperature: 0.3,
+                    maxOutputTokens: 100000
+                }
+            })
+        });
+    } catch (e) {
+        // Network-level error (server unreachable / CORS / network down)
+        const err = new Error('Backend unreachable — is the server running?');
+        err._raw = e;
+        throw err;
+    }
 
     if (!response.ok) {
         let rawBody = null;
@@ -343,7 +351,7 @@ Instructions:
     }
 
     const data = await response.json();
-    let text = data.candidates[0].content.parts[0].text;
+    let text = data.text;
     
     // Replace LORD with YHWH
     text = text.replace(/\b(the\s+)?LORD\b/gi, 'YHWH');
