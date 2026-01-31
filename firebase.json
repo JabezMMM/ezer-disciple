@@ -1,4 +1,17 @@
 {
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "venv",
+        ".venv",
+        "**/*.pyc",
+        "__pycache__",
+        ".env"
+      ]
+    }
+  ],
   "hosting": {
     "target": "ezer-text",
     "public": "frontend",
@@ -6,6 +19,12 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/generate",
+        "function": "generate"
+      }
     ]
   }
 }

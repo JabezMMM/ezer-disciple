@@ -3,7 +3,7 @@ import json
 
 # Load verses on module import
 try:
-    with open(os.path.join(os.path.dirname(__file__), '../data/verses.json'), 'r') as f:
+    with open(os.path.join(os.path.dirname(__file__), '../verses.json'), 'r') as f:
         ALL_VERSES = json.load(f)
 except Exception as e:
     print(f"Error loading verses: {e}")

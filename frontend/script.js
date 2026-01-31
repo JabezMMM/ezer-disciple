@@ -3,8 +3,8 @@ import { UIManager } from './js/ui_manager.js';
 
 // Configuration
 const PROXY_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:8000/generate'
-    : 'https://ezer-backend.onrender.com/generate'; // Live URL from Render dashboard
+    ? 'http://localhost:5001/ezer-disciple/us-central1/generate' // Local Firebase Emulator
+    : '/generate'; // Firebase Hosting rewrite to Function
 
 const chatService = new ChatService(PROXY_URL);
 const uiManager = new UIManager();

@@ -1,26 +1,22 @@
-# Ezer Disciples: Self-Reflection Tool
+# Ezer Text: Text Helper
 
-A web-based self-assessment tool designed to facilitate personal spiritual reflection through a series of questions and a visual radar chart. This tool is part of the Ezer Disciples initiative to encourage growth in biblical virtues and practical obedience.
+A scripture-based AI assistant designed to provide biblical guidance and comfort. This tool uses Retrieval-Augmented Generation (RAG) to ensure responses are grounded in a curated database of scripture, leveraging the speed and intelligence of Groq's Llama 3.1 model.
 
 ---
 
 ## 🔍 Overview
 
-The tool presents a curated set of reflective questions related to spiritual maturity, allowing users to rate themselves on a scale of 0–5. A real-time radar chart visualizes the user’s self-assessment across key biblical dimensions.
+Ezer Text acts as a digital companion for spiritual reflection. By analyzing user queries and matching them with relevant biblical verses, it provides concise, scripture-only responses to help users find peace, wisdom, and encouragement in their daily lives.
 
 ---
 
 ## 🎯 Features
 
-- Responsive Radar Chart using Chart.js  
-- Dynamic Question Generation from a JSON-like structure  
-- Score Descriptions for clarity on each rating  
-- Responsive Layout:  
-  - Desktop: Chart fixed on the left, scrollable questions on the right  
-  - Mobile: Chart fixed on top, scrollable questions below  
-- Clean Code Architecture:  
-  - Externalized CSS and JavaScript  
-  - Semantic HTML structure  
+- **Scripture-Grounded Responses**: Uses RAG to ensure every answer is cited and based on a curated knowledge base.
+- **Privacy-First**: Simple, clean interface with no tracking or complex data collection.
+- **Blazing Fast**: Powered by Groq Llama 3.1-8b-instant for near-instant responses.
+- **Firebase Native**: Fully integrated with Firebase Hosting and Cloud Functions for a seamless, serverless experience.
+- **Biblical Context**: Specifically tuned to replace common terms with original context (e.g., YHWH) for deeper study.
 
 ---
 
@@ -32,17 +28,17 @@ ezer-text/
 │   ├── script.js                     # Calls backend /generate
 │   └── style.css
 │
-├── backend/                          # Flask API (Deploy to Render)
-│   ├── app.py                        # Flask entrypoint
-│   ├── routes/
-│   │   └── generate.py               # /generate endpoint
+├── functions/                    # Firebase Cloud Functions (Python backend)
+│   ├── main.py                   # Entry point for HTTPS function
+│   ├── requirements.txt          # Python dependencies
 │   ├── services/
-│   │   └── ai_provider.py            # Groq API logic (swappable later)
-│   ├── requirements.txt
-│   └── Procfile                      # Render startup config
+│   │   └── ai_service.py         # Handles calls to LLM provider (Groq etc.)
+│   └── utils/
+│       └── prompt_builder.py     # Builds scripture-only prompt safely
 │
-├── firebase.json                     # Firebase Hosting config
-├── .firebaserc
+├── firestore.rules               # Firestore security rules
+├── firebase.json                 # Firebase hosting + functions config
+├── .firebaserc                   # Firebase project alias
 ├── .gitignore
 └── README.md
 
