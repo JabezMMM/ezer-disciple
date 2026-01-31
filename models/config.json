@@ -1,0 +1,12 @@
+{
+    "model_source": "huggingface_space",
+    "hf_space_config": {
+        "username_env": "YOUR_USERNAME",
+        "space_name_env": "YOUR_SPACE_NAME",
+        "timeout_env": "UPSTREAM_TIMEOUT"
+    },
+    "local_model_config": {
+        "path": "./models/weights",
+        "type": "llama-2-7b"
+    }
+}

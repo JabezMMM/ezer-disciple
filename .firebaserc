@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "eliyezer-site"
+  },
+  "targets": {
+    "eliyezer-site": {
+      "hosting": {
+        "ezer-text": [
+          "ezer-text"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "target": "ezer-text",
+    "public": "frontend",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: ezer-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn server:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: YOUR_USERNAME
+        sync: false
+      - key: YOUR_SPACE_NAME
+        sync: false
+      - key: UPSTREAM_TIMEOUT
+        value: "30"
