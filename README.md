@@ -25,19 +25,26 @@ The tool presents a curated set of reflective questions related to spiritual mat
 ---
 
 ## 📂 Project Structure
-ezer-reflection-tool/
+ezer-text/
 │
-├── frontend/               # Static Frontend (Firebase Hosting)
+├── frontend/                         # Firebase Hosting (STATIC ONLY)
 │   ├── index.html
-│   ├── script.js
+│   ├── script.js                     # Calls backend /generate
 │   └── style.css
-├── backend/                # Flask Backend API (Render/Railway)
-│   ├── server.py
+│
+├── backend/                          # Flask API (Deploy to Render)
+│   ├── app.py                        # Flask entrypoint
+│   ├── routes/
+│   │   └── generate.py               # /generate endpoint
 │   ├── services/
-│   └── data/
-├── models/                 # AI Model Configuration
-├── firebase.json           # Firebase Hosting Config
-└── README.md               # Project documentation
+│   │   └── ai_provider.py            # Groq API logic (swappable later)
+│   ├── requirements.txt
+│   └── Procfile                      # Render startup config
+│
+├── firebase.json                     # Firebase Hosting config
+├── .firebaserc
+├── .gitignore
+└── README.md
 
 ---
 

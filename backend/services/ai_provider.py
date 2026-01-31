@@ -7,13 +7,14 @@ from .rag_service import find_relevant_verses
 def get_ai_response(prompt, user_ip):
     """
     Proxies the request to Hugging Face Space.
+    TODO: Swap this logic for Groq API if/when GROQ_API_KEY is provided.
     """
     hf_user = os.getenv("YOUR_USERNAME")
     hf_space = os.getenv("YOUR_SPACE_NAME")
     upstream_timeout = int(os.getenv("UPSTREAM_TIMEOUT", "15"))
 
     if not hf_user or not hf_space:
-        raise ValueError("HF Space not configured (YOUR_USERNAME, YOUR_SPACE_NAME missing).")
+        raise ValueError("AI Provider not configured (Missing HF credentials).")
 
     api_url = f'https://{hf_user}-{hf_space}.hf.space/generate'
     payload = {"prompt": prompt}
@@ -60,6 +61,7 @@ def generate_response(user_query, user_ip):
     else:
         context_str = "\n".join([f"{v['ref']}: \"{v['text']}\"" for v in relevant_verses])
 
+    # System instructions (swappable later for Groq/Llama)
     system_prompt = f"""You are a biblical assistant. 
 Authorized Knowledge Base:
 {context_str}
