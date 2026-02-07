@@ -7,18 +7,15 @@ initialize_app()
 
 @https_fn.on_request(secrets=["GROQ_API_KEY"])
 def generate(req: https_fn.Request) -> https_fn.Response:
-    # Handle CORS
-    if req.method == "OPTIONS":
-        headers = {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST",
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Max-Age": "3600",
-        }
-        return https_fn.Response("", status=204, headers=headers)
-
     # Set CORS headers for the main request
-    headers = {"Access-Control-Allow-Origin": "*"}
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+    }
+
+    if req.method == "OPTIONS":
+        return https_fn.Response("", status=204, headers=headers)
 
     if req.method != "POST":
         return https_fn.Response("Method Not Allowed", status=405, headers=headers)

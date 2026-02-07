@@ -3,7 +3,7 @@ import { UIManager } from './js/ui_manager.js';
 
 // Configuration
 const PROXY_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:5001/ezer-disciple/us-central1/generate' // Local Firebase Emulator
+    ? 'http://localhost:5001/eliyezer-site/us-central1/generate' // Local Firebase Emulator
     : '/generate'; // Firebase Hosting rewrite to Function
 
 const chatService = new ChatService(PROXY_URL);
@@ -36,7 +36,15 @@ async function handleSend() {
     try {
         const response = await chatService.sendMessage(question);
         uiManager.removeLoading();
-        uiManager.addMessage(response, 'assistant');
+
+        if (Array.isArray(response)) {
+            for (const msg of response) {
+                uiManager.addMessage(msg, 'assistant');
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        } else {
+            uiManager.addMessage(response, 'assistant');
+        }
     } catch (error) {
         uiManager.removeLoading();
 
@@ -58,7 +66,14 @@ function handleRetry(seconds) {
         uiManager.showToast('Auto-retrying...', 'info');
         try {
             const response = await chatService.sendMessage(lastQuestion);
-            uiManager.addMessage(response, 'assistant');
+            if (Array.isArray(response)) {
+                for (const msg of response) {
+                    uiManager.addMessage(msg, 'assistant');
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            } else {
+                uiManager.addMessage(response, 'assistant');
+            }
         } catch (e) {
             uiManager.showToast('Retry failed: ' + e.message, 'error');
         }

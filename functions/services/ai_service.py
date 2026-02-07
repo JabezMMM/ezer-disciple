@@ -32,7 +32,10 @@ def get_ai_response(prompt):
             max_tokens=300,
         )
         
-        return {"text": chat_completion.choices[0].message.content}
+        content = chat_completion.choices[0].message.content
+        messages = [msg.strip() for msg in content.split("|||") if msg.strip()]
+        
+        return {"messages": messages}
 
     except Exception as e:
         print(f"Groq API Error: {e}")

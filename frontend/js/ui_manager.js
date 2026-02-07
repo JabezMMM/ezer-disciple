@@ -64,6 +64,7 @@ export class UIManager {
     }
 
     _linkifyVerses(text) {
+        if (!text || typeof text !== 'string') return '';
         const bookAbbrev = {
             'Genesis': 'gen', 'Exodus': 'exo', 'Leviticus': 'lev', 'Numbers': 'num', 'Deuteronomy': 'deu',
             'Joshua': 'jos', 'Judges': 'jdg', 'Ruth': 'rut', '1 Samuel': '1sa', '2 Samuel': '2sa',

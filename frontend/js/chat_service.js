@@ -22,7 +22,10 @@ export class ChatService {
             }
 
             const data = await response.json();
-            return this._processResponse(data.text);
+            if (data.messages && Array.isArray(data.messages)) {
+                return data.messages.map(m => this._processResponse(m));
+            }
+            return this._processResponse(data.text || '');
 
         } catch (error) {
             clearTimeout(timeoutId);
@@ -48,9 +51,10 @@ export class ChatService {
     }
 
     _processResponse(text) {
-        // Replace LORD/GOD with YHWH
-        let processed = text.replace(/\b(the\s+)?LORD\b/gi, 'YHWH');
-        processed = processed.replace(/\b(the\s+)?GOD\b/gi, 'YHWH');
+        if (!text || typeof text !== 'string') return '';
+        // Replace LORD/GOD with YHWH (Case-sensitive for YHWH names, ignore case for 'the')
+        let processed = text.replace(/\b([tT]he\s+)?LORD\b/g, 'YHWH');
+        processed = processed.replace(/\b([tT]he\s+)?GOD\b/g, 'YHWH');
         return processed;
     }
 
